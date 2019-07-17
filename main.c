@@ -33,9 +33,9 @@ static inline void setup_pin(void)
 /* Delay initialization */
 void DWT_Init(void)
 {
-    SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;							/* Allow to use the counter 	                    */
-    DWT_CYCCNT  = 0;  												    /* Reset the counting register 	                    */
-    DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;  						    /* Start the counter 			                    */
+    SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;                            /* Allow to use the counter                         */
+    DWT_CYCCNT  = 0;                                                    /* Reset the counting register                      */
+    DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;                              /* Start the counter                                */
 }
 
 /* Delta for delay */
@@ -478,8 +478,8 @@ int main(void)
     setup_pin();                    /* LED initialization   */
     DWT_Init();                     /* Delay initialization */
     
-  while (1)  
-	{		
+    while (1)  
+    {		
 		CometWhite();
 		moveRed();
 		moveWhite();
