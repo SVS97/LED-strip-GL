@@ -34,8 +34,8 @@ static inline void setup_pin(void)
 void DWT_Init(void)
 {
     SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;							/* Allow to use the counter 	                    */
-	DWT_CYCCNT  = 0;  												    /* Reset the counting register 	                    */
-	DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;  						    /* Start the counter 			                    */
+    DWT_CYCCNT  = 0;  												    /* Reset the counting register 	                    */
+    DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;  						    /* Start the counter 			                    */
 }
 
 /* Delta for delay */
@@ -54,7 +54,7 @@ void delay_us(uint32_t us)
 /* delay_ms */
 void delay_ms(uint32_t ms)
 {
-	uint32_t t0 =  DWT->CYCCNT;
+    uint32_t t0 =  DWT->CYCCNT;
     uint32_t us_count_tic =  ms * (SystemCoreClock/1000);
     while (delta(t0, DWT->CYCCNT) < us_count_tic) ;
 }
@@ -226,7 +226,7 @@ void loadWS2812B (void)
 /* Clear array in LED strip */
 void clear_LED()
 {
-for (int i = 0; i < LEDC; i++)
+    for (int i = 0; i < LEDC; i++)
 	{
 		ledred[i] =   0;
 		ledblue[i] =  0;
@@ -293,50 +293,50 @@ void CometWhite (void)
 
 void moveRed (void)		
 {
-		clear_LED();
-		/* Forward movement */
-		unsigned char i = 0;
-		do
-		{	ledred[i] =  250;
-			ledblue[i] =   0;
-			ledgreen[i] =  0;
-			delay_ms(30);
+    clear_LED();
+	/* Forward movement */
+	unsigned char i = 0;
+	do
+	{	ledred[i] =  250;
+		ledblue[i] =   0;
+		ledgreen[i] =  0;
+		delay_ms(30);
 			
-			ledred[i-1] =  0;
-			ledblue[i-1] = 0;
-			ledgreen[i-1]= 0;
-			delay_ms(30);
-			i++;
+		ledred[i-1] =  0;
+		ledblue[i-1] = 0;
+		ledgreen[i-1]= 0;
+		delay_ms(30);
+		i++;
 			
-			loadWS2812B();
-		} while (i<=LEDC);
+		loadWS2812B();
+	} while (i<=LEDC);
 		
-		/* Back movement */
-		 i = LEDC;
-		do
-		{	ledred[i-1] = 250;
-			ledblue[i-1] =   0;
-			ledgreen[i-1] =  0;
-			delay_ms(15);
+	/* Back movement */
+	i = LEDC;
+	do
+	{	ledred[i-1] = 250;
+		ledblue[i-1] =   0;
+		ledgreen[i-1] =  0;
+		delay_ms(15);
 
-			ledred[i] =      0;
-			ledblue[i] =     0;
-			ledgreen[i] =    0;
-			delay_ms(15);
-			i--;
-			loadWS2812B();
-		} while (i>0);
+		ledred[i] =      0;
+		ledblue[i] =     0;
+		ledgreen[i] =    0;
+		delay_ms(15);
+		i--;
+		loadWS2812B();
+	} while (i>0);
 
-		ledred[0] =      0;
-	ledblue[0] =     0;
-	ledgreen[0] =    0;
+    ledred[0] =      0;
+    ledblue[0] =     0;
+    ledgreen[0] =    0;
 }
 
 void moveWhite (void)
 {
-		ledred[0] =  0;
-		ledblue[0] =  0;
-		ledgreen[0] =  0;
+    ledred[0] =  0;
+    ledblue[0] =  0;
+    ledgreen[0] =  0;
 	
 	/* Forward moving */
 	unsigned char i = 2;
@@ -357,7 +357,7 @@ void moveWhite (void)
 	} while (i<=LEDC);
 
 	/* Back moving */
-	i = LEDC;
+    i = LEDC;
 	do
 	{	ledred[i-1] =    255;
 		ledblue[i-1] =  255;
@@ -394,7 +394,7 @@ void lightningBlueGreen (void)
 
 void ColorLight (void)
 {
-	unsigned char n = 0;
+    unsigned char n = 0;
 	do
 	{	unsigned char i = 0;
 		unsigned char j = 1;
@@ -475,8 +475,8 @@ void ColorLight (void)
 
 int main(void)
 {
-    setup_pin();   					/* LED initialization 	*/
-	DWT_Init();						/* Delay initialization */
+    setup_pin();                    /* LED initialization   */
+    DWT_Init();                     /* Delay initialization */
     
   while (1)  
 	{		
