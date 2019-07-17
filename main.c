@@ -18,7 +18,15 @@
 #define DWT_CONTROL     (*(volatile unsigned long *)0xE0001000)
 #define SCB_DEMCR       (*(volatile unsigned long *)0xE000EDFC)         /*                                                  */
     
-	
+#define DATA0x80        (temp&0x80)                                     /* Data for LED arrays                              */
+#define DATA0x40        (temp&0x40)
+#define DATA0x20        (temp&0x20)
+#define DATA0x10        (temp&0x10)
+#define DATA0x8         (temp&0x8)
+#define DATA0x4         (temp&0x4)
+#define DATA0x2         (temp&0x2)
+#define DATA0x1         (temp&0x1)                                      /*                                                  */
+
 unsigned char ledred[LEDC+1] ;                                          /* Array of red                                     */
 unsigned char ledblue[LEDC+1] ;                                         /* Array of blue                                    */
 unsigned char ledgreen[LEDC+1];                                         /* Array of green                                   */
@@ -87,7 +95,7 @@ void loadWS2812B (void)
 				temp = 0;
 			} 
 			/* Byte loading */
-			if(temp&0x80)
+			if(DATA0x80)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -104,7 +112,7 @@ void loadWS2812B (void)
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
 			
-			if(temp&0x40)
+			if(DATA0x40)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -121,7 +129,7 @@ void loadWS2812B (void)
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
 			
-			if(temp&0x20)
+			if(DATA0x20)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -137,7 +145,7 @@ void loadWS2812B (void)
 					ClearOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
-			if(temp&0x10)
+			if(DATA0x10)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -153,7 +161,7 @@ void loadWS2812B (void)
 					ClearOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
-			if(temp&0x8)
+			if(DATA0x8)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -170,7 +178,7 @@ void loadWS2812B (void)
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
 			
-			if(temp&0x4)
+			if(DATA0x4)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
@@ -186,7 +194,7 @@ void loadWS2812B (void)
 					ClearOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
-			if(temp&0x2)
+			if(DATA0x2)
 			{
 				/* Formation of bit 1 */ 
 				SetOutBit;
@@ -203,7 +211,7 @@ void loadWS2812B (void)
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
 			
-			if(temp&0x1)
+			if(DATA0x1)
 			{
 				/* Formation of bit 1 */
 				SetOutBit;
