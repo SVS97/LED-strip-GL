@@ -4,55 +4,59 @@
 #include <stdlib.h>
 
 
-#define LED_PWM (1 << 8) 																	/* port D, pin 8  																	*/
-#define LEDC			30																			/* Count of LEDs in strip (should be 1 or greater) 	*/
-#define PORTOUT			GPIOD																	/* port for WS2812B 																*/
-#define ClearOutBit		(PORTOUT->ODR = 0); 								/*	0 to output 																		*/
-#define SetOutBit		(PORTOUT->ODR = LED_PWM);   					/* 1  to output																			*/
+#define LED_PWM         (1 << 8)                                        /* Port D, pin 8                                    */
+#define LEDC            30                                              /* Count of LEDs in strip (should be 1 or greater)  */
+#define PORTOUT         GPIOD                                           /* Port for WS2812B                                 */
+#define ClearOutBit     (PORTOUT->ODR = 0)                              /* 0 to output                                      */
+#define SetOutBit       (PORTOUT->ODR = LED_PWM)                        /* 1  to output                                     */
 
-#define RED				0x0F																		/* red initialization 															*/
-#define GREEN			0xF0																		/* green initialization 														*/
-#define BLUE			0x55																		/* blue initialization 															*/
+#define RED             0x0F                                            /* Red initialization                               */
+#define GREEN           0xF0                                            /* Green initialization                             */
+#define BLUE            0x55                                            /* Blue initialization                              */
 
-#define    DWT_CYCCNT    *(volatile unsigned long *)0xE0001004		/* Macros for delay function								*/
-#define    DWT_CONTROL   *(volatile unsigned long *)0xE0001000
-#define    SCB_DEMCR     *(volatile unsigned long *)0xE000EDFC		/*																					*/
+#define DWT_CYCCNT      (*(volatile unsigned long *)0xE0001004)         /* Macros for delay function                        */
+#define DWT_CONTROL     (*(volatile unsigned long *)0xE0001000)
+#define SCB_DEMCR       (*(volatile unsigned long *)0xE000EDFC)         /*                                                  */
+    
 	
-unsigned char ledred[LEDC+1] ;														/* Array of red 	*/
-unsigned char ledblue[LEDC+1] ;														/* Array of blue 	*/
-unsigned char ledgreen[LEDC+1];														/* Array of green	*/
+unsigned char ledred[LEDC+1] ;                                          /* Array of red                                     */
+unsigned char ledblue[LEDC+1] ;                                         /* Array of blue                                    */
+unsigned char ledgreen[LEDC+1];                                         /* Array of green                                   */
 
-
+/* Setup pin for LED strip */
 static inline void setup_pin(void)
 {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;    						/* Enable clocking of port D (PWM LED) 	*/
-    PORTOUT->MODER |=  GPIO_MODER_MODER8_0;    					/* Enable high level for LED 					 	*/
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;                                /* Enable clocking of port D (PWM LED)              */
+    PORTOUT->MODER |=  GPIO_MODER_MODER8_0;                             /* Enable high level for LED                        */
 }
 
+/* Delay initialization */
 void DWT_Init(void)
 {
-  SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;							/* Allow to use the counter 		*/
-	DWT_CYCCNT  = 0;  																		/* Reset the counting register 	*/
-	DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;  							/* Start the counter 						*/
+    SCB_DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;							/* Allow to use the counter 	                    */
+	DWT_CYCCNT  = 0;  												    /* Reset the counting register 	                    */
+	DWT_CONTROL |= DWT_CTRL_CYCCNTENA_Msk;  						    /* Start the counter 			                    */
 }
 
-/* delta for delay */
+/* Delta for delay */
 static __inline uint32_t delta(uint32_t t0, uint32_t t1)
 {
     return (t1 - t0); 
 }
+/* delay_us */
 void delay_us(uint32_t us)
 {
-      uint32_t t0 =  DWT->CYCCNT;
-      uint32_t us_count_tic =  us * (SystemCoreClock/1000000);
-      while (delta(t0, DWT->CYCCNT) < us_count_tic) ;
+    uint32_t t0 =  DWT->CYCCNT;
+    uint32_t us_count_tic =  us * (SystemCoreClock/1000000);
+    while (delta(t0, DWT->CYCCNT) < us_count_tic) ;
 }
 
+/* delay_ms */
 void delay_ms(uint32_t ms)
 {
 	uint32_t t0 =  DWT->CYCCNT;
-  uint32_t us_count_tic =  ms * (SystemCoreClock/1000);
-  while (delta(t0, DWT->CYCCNT) < us_count_tic) ;
+    uint32_t us_count_tic =  ms * (SystemCoreClock/1000);
+    while (delta(t0, DWT->CYCCNT) < us_count_tic) ;
 }
 
 /* Load to strip data array */
@@ -60,32 +64,32 @@ void loadWS2812B (void)
 {
 		
 	unsigned	char a,b,temp;
-	// reset formation
+	/* Reset formation  */
 	PORTOUT->ODR = 0;
 	__nop();
-		//--------------------------------
+
 	for(a=0;a<LEDC;a++)
 	{
 		for(b=0;b<3;b++)
 		{
 			switch (b)
 			{
-				case 0 :
+			case 0 :
 				temp=ledgreen[a];
 				break;
-				case 1 :
+			case 1 :
 				temp=ledred[a];
 				break;
-				case 2 :
+			case 2 :
 				temp=ledblue[a];
 				break;
-				default:
+			default:
 				temp = 0;
 			} 
-			// byte loading
+			/* Byte loading */
 			if(temp&0x80)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -93,7 +97,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -102,7 +106,7 @@ void loadWS2812B (void)
 			
 			if(temp&0x40)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -110,7 +114,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -119,7 +123,7 @@ void loadWS2812B (void)
 			
 			if(temp&0x20)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -127,7 +131,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -135,7 +139,7 @@ void loadWS2812B (void)
 			}
 			if(temp&0x10)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -143,7 +147,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -151,7 +155,7 @@ void loadWS2812B (void)
 			}
 			if(temp&0x8)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -159,7 +163,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -168,7 +172,7 @@ void loadWS2812B (void)
 			
 			if(temp&0x4)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -176,7 +180,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -184,7 +188,7 @@ void loadWS2812B (void)
 			}
 			if(temp&0x2)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */ 
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -192,7 +196,7 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
@@ -201,7 +205,7 @@ void loadWS2812B (void)
 			
 			if(temp&0x1)
 			{
-				//formation of bit 1
+				/* Formation of bit 1 */
 				SetOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 				ClearOutBit;
@@ -209,17 +213,17 @@ void loadWS2812B (void)
 			}
 			else
 			{
-				//formation of bit 0
+				/* Formation of bit 0 */
 					SetOutBit;
 				__nop();__nop();__nop();__nop();
 					ClearOutBit;
 				__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
 			}
 		}
-	}
+    }
 }
 
-
+/* Clear array in LED strip */
 void clear_LED()
 {
 for (int i = 0; i < LEDC; i++)
@@ -232,11 +236,10 @@ for (int i = 0; i < LEDC; i++)
 	loadWS2812B();
 }
 
-
 /* Move effects */
 void CometWhite (void)
 {
-	//forward movement
+	/* Forward movement */
 	unsigned char i = 5;
 	do
 	{	
@@ -270,7 +273,7 @@ void CometWhite (void)
 		loadWS2812B();
 } while (i<=LEDC);
 	
-	//disabling last 4 LED
+	/* Disabling last 4 LED */
 	ledred[LEDC-1] =   0;
 	ledblue[LEDC-1] =  0;
 	ledgreen[LEDC-1] = 0;
@@ -291,7 +294,7 @@ void CometWhite (void)
 void moveRed (void)		
 {
 		clear_LED();
-		//forward movement
+		/* Forward movement */
 		unsigned char i = 0;
 		do
 		{	ledred[i] =  250;
@@ -308,7 +311,7 @@ void moveRed (void)
 			loadWS2812B();
 		} while (i<=LEDC);
 		
-		//back movement
+		/* Back movement */
 		 i = LEDC;
 		do
 		{	ledred[i-1] = 250;
@@ -335,7 +338,7 @@ void moveWhite (void)
 		ledblue[0] =  0;
 		ledgreen[0] =  0;
 	
-	//forward moving
+	/* Forward moving */
 	unsigned char i = 2;
 	do
 	{	ledred[i] =  255;
@@ -353,7 +356,7 @@ void moveWhite (void)
 		
 	} while (i<=LEDC);
 
-	//back moving
+	/* Back moving */
 	i = LEDC;
 	do
 	{	ledred[i-1] =    255;
@@ -472,10 +475,9 @@ void ColorLight (void)
 
 int main(void)
 {
-  setup_pin();   																	/* LED initialization 	*/
-	DWT_Init();																			/* Delay initialization */
-	
-
+    setup_pin();   					/* LED initialization 	*/
+	DWT_Init();						/* Delay initialization */
+    
   while (1)  
 	{		
 		CometWhite();
@@ -485,5 +487,3 @@ int main(void)
 		ColorLight();
 	}
 }
-
-
