@@ -485,5 +485,5 @@ int main(void)
 		moveWhite();
 		lightningBlueGreen();
 		ColorLight();
-	}
+    }
 }
