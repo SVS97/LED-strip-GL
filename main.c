@@ -471,7 +471,7 @@ void led_ColorLight (void)
 
             led_load();
         }while (i<=LEDC);
-    n++;
+        n++;
 
     }while (n<=50);
 
