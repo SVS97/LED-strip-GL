@@ -102,7 +102,7 @@ void led_load (void)
                 temp = 0;
             } 
             /* Byte loading */
-            if(BIT_N_IS_SET(temp, 0x80))
+            if(BIT_N_IS_SET(temp, 7))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -119,7 +119,7 @@ void led_load (void)
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
 
-            if(BIT_N_IS_SET(temp, 0x40))
+            if(BIT_N_IS_SET(temp, 6))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -136,7 +136,7 @@ void led_load (void)
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
             
-            if(BIT_N_IS_SET(temp, 0x20))
+            if(BIT_N_IS_SET(temp, 5))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -152,7 +152,7 @@ void led_load (void)
                     ClearOutBit;
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
-            if(BIT_N_IS_SET(temp, 0x10))
+            if(BIT_N_IS_SET(temp, 4))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -168,7 +168,7 @@ void led_load (void)
                     ClearOutBit;
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
-            if(BIT_N_IS_SET(temp, 0x8))
+            if(BIT_N_IS_SET(temp, 3))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -185,7 +185,7 @@ void led_load (void)
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
             
-            if(BIT_N_IS_SET(temp, 0x4))
+            if(BIT_N_IS_SET(temp, 2))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -201,7 +201,7 @@ void led_load (void)
                     ClearOutBit;
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
-            if(BIT_N_IS_SET(temp, 0x2))
+            if(BIT_N_IS_SET(temp, 1))
             {
                 /* Formation of bit 1 */ 
                 SetOutBit;
@@ -218,7 +218,7 @@ void led_load (void)
                 __nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();__nop();
             }
             
-            if(BIT_N_IS_SET(temp, 0x1))
+            if(BIT_N_IS_SET(temp, 0))
             {
                 /* Formation of bit 1 */
                 SetOutBit;
@@ -498,6 +498,6 @@ int main(void)
         led_moveRed();
         led_moveWhite();
         led_lightningBlueGreen();
-        led_ColorLight();
+        led_сolorLight();
     }
 }
