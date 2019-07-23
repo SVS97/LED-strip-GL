@@ -24,7 +24,16 @@
 #define DWT_CONTROL     (*(volatile unsigned long *)0xE0001000)
 #define SCB_DEMCR       (*(volatile unsigned long *)0xE000EDFC)         /*                                                  */
     
-#define BIT_N_IS_SET(var, num)     ((var) & (1 << num))                 /* Data for LED arrays                              */
+//#define BIT_7        (temp&0x80)                                        /* Data for LED arrays                              */
+/*#define BIT_6        (temp&0x40)
+#define BIT_5        (temp&0x20)
+#define BIT_4        (temp&0x10)
+#define BIT_3        (temp&0x8)
+#define BIT_2        (temp&0x4)
+#define BIT_1        (temp&0x2)
+#define BIT_0        (temp&0x1) */                                        /*                                                  */
+
+#define BIT_N_IS_SET(var, num)     ((var) & (1 << num))
 
 unsigned char ledred[LEDC+1] ;                                          /* Array of red                                     */
 unsigned char ledblue[LEDC+1] ;                                         /* Array of blue                                    */
@@ -489,6 +498,6 @@ int main(void)
         led_moveRed();
         led_moveWhite();
         led_lightningBlueGreen();
-        led_colorLight();
+        led_сolorLight();
     }
 }
